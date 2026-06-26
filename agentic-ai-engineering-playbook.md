@@ -4,7 +4,11 @@
 > *"Complete Agentic AI Roadmap 2026"* podcast, then **fact-checked against primary sources**
 > and reorganized from a conversation into a build lifecycle.
 >
-> Companion file: [`complete-agentic-ai-roadmap-2026-transcript.md`](./complete-agentic-ai-roadmap-2026-transcript.md) (the raw source).
+> Companion file: [`complete-agentic-ai-roadmap-2026-transcript.md`](./complete-agentic-ai-roadmap-2026-transcript.md) —
+> a capture of the episode's **Substack-generated closed captions** (with machine-assigned speaker
+> labels), **not** an audio-verified verbatim transcription. The source podcast is itself an
+> unverified Substack post; this playbook's value is that it re-grounds the claims against primary
+> sources, not that the podcast was authoritative.
 
 ---
 
@@ -22,9 +26,16 @@ Every load-bearing claim carries a confidence marker so you know how much weight
 
 | Marker | Meaning |
 |--------|---------|
-| ✅ **Verified** | Confirmed by 3-vote adversarial verification against a **primary source** (official docs, spec, OWASP, peer-reviewed paper). Survived an explicit attempt to refute it. |
-| 🔹 **Sourced** | Backed by a primary source that was fetched and quoted, but not put through the full adversarial vote. High but not stress-tested. |
+| ✅ **Verified** | Confirmed by **3-vote adversarial verification** against a **primary source** in the automated deep-research run (25/25 such claims confirmed, 0 refuted). Survived an explicit attempt to refute it. |
+| 🔹 **Sourced** | Backed by a primary source that was fetched and quoted, but **not** put through the adversarial vote — including claims established only by *convergence of independent investigations* (see Phase 3). High but not stress-tested. |
 | ⚪ **Consensus** | Widely-held practitioner guidance / framework convention. Sensible default, but not anchored to one decisive primary source. |
+
+> **Marker scope:** ✅ is reserved strictly for the 25 claims that passed the adversarial vote
+> (concentrated in Phases 5–7: orchestration guidance, infrastructure, and safety). Claims sourced
+> by other means — single-pass research agents, fetch-and-extract, or investigator convergence — are
+> marked 🔹 even when the underlying source is a peer-reviewed paper, because *our process* did not
+> stress-test them. The scorecard in Appendix A uses ✅/⚠️/❌ in a **different** sense (editorial
+> accuracy verdicts on the podcast), explained there.
 
 **Time-sensitivity:** Framework APIs (LangGraph, OpenAI Agents SDK, Google ADK) and the MCP spec
 evolve fast. The MCP spec cited is the **2025-11-25** revision; OWASP is the **2025** edition. Both
@@ -131,13 +142,16 @@ podcast made a strong claim here that deserved — and got — a higher evidenti
 
 ### ⚠️ Podcast correction — the big one: *"basic RAG is completely dead / fundamentally unsafe"*
 
-This was fact-checked with **three independent investigators** (one prosecuting the claim, one
-defending RAG, one defining terms). They **converged**:
+This was fact-checked with **three independent investigators** given deliberately opposing mandates
+(one prosecuting the claim, one defending RAG, one defining terms). Their three final reports are
+recoverable and **converged** on the same conclusion:
 
 > **The absolute claim is NOT supported by any Tier-1 primary source.** No major lab, vendor, or
 > peer-reviewed survey (Anthropic, OpenAI, Microsoft, AWS, Google, OWASP, NIST, the RAG surveys)
 > states that the retrieve-then-generate architecture is inherently broken or should be abandoned.
-> ✅ *(convergent finding across all three investigations.)*
+> 🔹 *(established by **convergence of three opposing-mandate investigations** — a distinct mechanism
+> from the 3-vote adversarial verification; each was a single-pass research agent, so this is marked
+> 🔹, not ✅. See the method note.)*
 
 Mapped to the four interpretations you should always separate:
 
@@ -151,9 +165,11 @@ Mapped to the four interpretations you should always separate:
 **The genuine kernel of truth — security.** The one place the claim leans toward an *architectural*
 flaw is safety: retrieved, untrusted text is treated as trusted context.
 - **PoisonedRAG**: injecting just **5 malicious texts** into a million-document store achieved a
-  **~90% attack success rate**, and existing defenses were "insufficient." ✅ *(USENIX Security 2025, arXiv:2402.07867)*
+  **~90% attack success rate**, and existing defenses were "insufficient." 🔹 *(USENIX Security 2025,
+  arXiv:2402.07867 — surfaced by a single investigator; peer-reviewed source, but not adversarially re-verified in our run.)*
 - **OWASP LLM01:2025** states plainly that RAG and fine-tuning *"do not fully mitigate prompt
-  injection vulnerabilities,"* and names poisoned-document retrieval as an attack. ✅
+  injection vulnerabilities,"* and names poisoned-document retrieval as an attack. 🔹 *(this specific
+  sentence came via the RAG investigation; the LLM01 entry itself is ✅-verified in Phase 7.)*
 
 **The defensible, scoped claim** (use this, not the slogan):
 
@@ -167,7 +183,7 @@ flaw is safety: retrieved, untrusted text is treated as trusted context.
 Note: even the headlines that shout "RAG is dead" walk it back in their own body text —
 *"RAG is not dead. The architecture most enterprises used to implement it is."* 🔹
 
-**Best practices (the parts of the podcast that hold up ✅-in-spirit).**
+**Best practices (the parts of the podcast that hold up — 🔹 sourced).**
 - **Generate citations / attribution.** Tie every claim back to the retrieved chunk. Strongly
   recommended; AWS Bedrock, Azure, and others build this in. 🔹
 - **Score groundedness / faithfulness**, and **refuse when confidence is low** rather than guessing.
@@ -215,10 +231,12 @@ presents both sides rather than picking one.
 
 - **Pro multi-agent (Anthropic).** Their multi-agent research system (lead agent + parallel
   subagents, each with its own context window) **outperformed a single agent by ~90.2%** on
-  breadth-first, parallelizable research tasks. ✅ *(Anthropic, "How we built our multi-agent research system")*
+  breadth-first, parallelizable research tasks. 🔹 *(Anthropic, "How we built our multi-agent research
+  system" — fetched/extracted, not part of the adversarially-verified set; treat the 90.2% figure as
+  Anthropic's self-reported result on their own eval.)*
 - **Anti multi-agent (Cognition).** *"Don't Build Multi-Agents"* — running multiple agents in
   collaboration produces **fragile systems** because *"decision-making ends up being too dispersed
-  and context isn't able to be shared thoroughly enough."* ✅ *(Cognition / Walden Yan, 2025)*
+  and context isn't able to be shared thoroughly enough."* 🔹 *(Cognition / Walden Yan, 2025 — fetched/extracted, not adversarially verified.)*
 - **The reconciling rule (OpenAI).** *"Start with one agent whenever you can. Add specialists only
   when they materially improve capability isolation, policy isolation, prompt clarity, or trace
   legibility."* ✅ *(OpenAI orchestration guide — verified verbatim)*
@@ -416,12 +434,18 @@ approval** (auto-approve low-risk, gate only high-impact actions — money, dele
 understanding*. The honest status: scaling oversight without either bottlenecking throughput or
 hollowing out the safeguard is an **unsolved governance problem**, not a solved feature.
 
-**Sources.** Human-in-the-loop governance / normalization-of-deviance discussion 🔹 (secondary);
-OWASP LLM06 HITL guidance ✅.
+**Sources.** Human-in-the-loop governance / normalization-of-deviance discussion ⚪ (secondary news
+source, not primary — treat as illustrative, not authoritative); OWASP LLM06 HITL guidance ✅.
 
 ---
 
 ## Appendix A — Podcast accuracy scorecard
+
+> **Note on symbols here:** in this table, ✅ / ⚠️ / ❌ are **editorial accuracy verdicts on the
+> podcast** (Accurate / Overstated / Wrong), **not** the confidence markers from the legend. A row
+> can be "✅ Accurate" while the supporting evidence in the body is only 🔹 sourced — e.g. the
+> SWE-bench (#17) and RAGAS (#18) specifics are 🔹, not adversarially verified. Where a row depends
+> on 🔹 evidence, read it as "consistent with the sources we found," not "stress-tested."
 
 | # | Podcast claim | Verdict | Correct version |
 |---|---|---|---|
@@ -490,9 +514,23 @@ SWEbench→**SWE-bench**, "Egentic"→**Agentic**, "IRAC/ARAG"→**RAG**.
 
 ---
 
-*Method note: the technical/safety claims marked ✅ passed 3-vote adversarial verification against
-primary sources (25/25 confirmed, 0 refuted) in an automated deep-research run; the "RAG is dead"
-fact-check was additionally cross-examined by three independent investigators (prosecute / defend /
-define) that converged. Claims marked 🔹 are primary-sourced but not adversarially stress-tested;
-⚪ marks practitioner consensus. Re-verify version-specific and fast-moving details before relying
-on them.*
+*Method note (what each marker actually rests on):*
+
+- *✅ — applies **only** to the **25 claims** that passed **3-vote adversarial verification** against
+  primary sources in the automated deep-research run (25/25 confirmed, 0 refuted). These cluster in
+  Phases 5–7: the OpenAI "start with one agent" guidance, the LangGraph / OpenAI Agents SDK / Google
+  ADK capabilities, the MCP architecture/origin/security claims, and the OWASP numbering, definitions,
+  and mitigations (including the LLM06 vs. LLM08 correction). This is the trustworthy backbone.*
+- *🔹 — primary-sourced or peer-reviewed, but **not** put through the adversarial vote. This includes
+  three categories: (a) claims fetched/extracted by the workflow but dropped before the verification
+  budget (e.g. SWE-bench, RAGAS, LLM-as-judge, OpenTelemetry, Arize Phoenix, and the Anthropic/Cognition
+  multi-agent figures); (b) the RAG fact-check, established by the **convergence of three independent
+  single-pass investigations** with opposing mandates (prosecute / defend / define) — all three final
+  reports are recoverable and agree, but convergence is a weaker mechanism than adversarial voting; and
+  (c) single-investigator finds such as PoisonedRAG.*
+- *⚪ — practitioner consensus or my own synthesis, not anchored to one decisive primary source
+  (e.g. the agent-vs-chatbot framing, JSON-schema design, tool-failure handling, HITL-at-scale).*
+
+*The source podcast is a Substack post; the companion transcript is a capture of its
+**Substack-generated captions**, not an audio-verified transcription. Framework APIs and the MCP /
+OWASP specs move fast — re-verify version-specific details before relying on them.*

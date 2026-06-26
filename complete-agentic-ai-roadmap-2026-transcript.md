@@ -5,7 +5,11 @@
 **Published:** 2026-05-27  
 **Speakers detected:** SPEAKER_00, SPEAKER_01
 
-> Auto-transcribed from the episode's closed captions (Substack-generated). Speaker labels are machine-assigned and may not reflect real names.
+> **This is a capture of the episode's Substack-generated closed captions — not an audio-verified
+> verbatim transcription.** The text was produced by Substack's automatic captioning, so wording may
+> diverge from the spoken audio (e.g. mis-hearings like "Egentic"/"LandGraph"/"Arise Phoenix"), and
+> the speaker labels (SPEAKER_00 / SPEAKER_01) are machine-assigned and may not reflect real names.
+> It has not been checked against the audio.
 
 ---
 
