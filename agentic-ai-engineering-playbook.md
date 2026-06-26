@@ -157,10 +157,10 @@ Mapped to the four interpretations you should always separate:
 
 | Interpretation | Verdict | Evidence |
 |---|---|---|
-| **(1) RAG is *inherently* flawed** | **Contradicted** | Every survey frames advanced/modular/agentic RAG as *"a progression and refinement within the RAG family"* — extending naive RAG, not replacing it. 🔹 *(Gao et al. 2312.10997; Singh et al. 2501.09136)* |
-| **(2) Weak/naive implementations fail** | **Strongly supported — this is the real claim** | Anthropic's Contextual Retrieval cut retrieval-failure **49%** (and **67%** with reranking) — i.e. naive RAG's failures are *technique-fixable*. 🔹 *(Anthropic, Sept 2024)* |
-| **(3) Unsuitable for certain use cases** | **Supported, narrow** | Long-context can substitute for RAG *only* when the whole corpus fits the context window; enterprise KBs routinely exceed it (cost ~1000×, latency 30s+). 🔹 *(Ragie, 2025; Anthropic ~200K-token threshold)* |
-| **(4) Newer approaches win for specific requirements** | **Supported, conditional** | *"Neither RAG nor long-context LLMs are a silver bullet; their relative strengths depend on model size, context length, task type…"* 🔹 *(LaRA, ICML 2025, arXiv:2502.09977)* |
+| **(1) RAG is *inherently* flawed** | **Contradicted** | Gao et al.: modular RAG *"builds upon the foundational principles of Advanced and Naive RAG, illustrating a progression and refinement within the RAG family"*; Singh et al. frame agentic RAG as embedding agents that *"transcend these limitations"* — extending, not replacing, retrieval. 🔹 *(Gao et al. 2312.10997 — verbatim; Singh et al. 2501.09136 — paraphrase)* |
+| **(2) Weak/naive implementations fail** | **Strongly supported — this is the real claim** | Anthropic's Contextual Retrieval *"can reduce the number of failed retrievals by 49% and, when combined with reranking, by 67%"* — i.e. naive RAG's failures are *technique-fixable*. 🔹 *(Anthropic, Sept 2024 — verbatim)* |
+| **(3) Unsuitable for certain use cases** | **Supported, narrow** | Long-context can substitute for RAG *only* when the whole corpus fits the window; enterprise KBs routinely exceed it (Ragie: sampled customer KBs *"exceed 10M tokens by almost 10x"*; RAG is *"1000x cheaper"* than a 10M-token context; long-context latency 30s+). 🔹 *(Ragie, 2025; Anthropic ~200K-token threshold)* |
+| **(4) Newer approaches win for specific requirements** | **Supported, conditional** | No approach wins universally — *"the optimal choice between RAG and LC depends on a complex interplay of factors, including the model's parameter size … context length, task type, and the characteristics of the retrieved chunks."* 🔹 *(LaRA, ICML 2025, arXiv:2502.09977 — verbatim from the abstract; the "silver bullet" phrasing is the paper's title, not a body quote)* |
 
 **The genuine kernel of truth — security.** The one place the claim leans toward an *architectural*
 flaw is safety: retrieved, untrusted text is treated as trusted context.
@@ -180,8 +180,11 @@ flaw is safety: retrieved, untrusted text is treated as trusted context.
 > alive, extended rather than replaced, and remains the cheaper, more scalable choice whenever the
 > knowledge base exceeds the context window.*
 
-Note: even the headlines that shout "RAG is dead" walk it back in their own body text —
-*"RAG is not dead. The architecture most enterprises used to implement it is."* 🔹
+Note: the "RAG is dead" framing lives mainly in vendor blogs and op-eds, which typically walk the
+absolute claim back in their own body text — describing retrieval's *evolution* rather than its
+death. ⚪ *(A widely-circulated "RAG is not dead, the architecture is" line was **removed** from this
+playbook: it was attributed to VentureBeat, but that source is unreachable and an exact-phrase search
+returns no verbatim match anywhere — so it could not be substantiated and should not be cited.)*
 
 **Best practices (the parts of the podcast that hold up — 🔹 sourced).**
 - **Generate citations / attribution.** Tie every claim back to the retrieved chunk. Strongly
@@ -264,8 +267,9 @@ you only load the tools/context needed for each micro-task.
 **Assessment.** ⚪ **Directionally plausible, context-dependent — not a universal law.** Loading only
 the relevant tools/policy per step *can* reduce per-call context vs. stuffing every instruction into
 one giant prompt. **But** multi-agent adds its own overhead: handoff/coordination tokens, repeated
-context-passing, and (per Anthropic's own report) multi-agent systems can burn **many times** the
-tokens of a single agent. So: routing can cut tokens *for a fixed task* by trimming context, while
+context-passing, and — per Anthropic's own report — *"multi-agent systems use about 15× more tokens
+than chats"* (vs. ~4× for a single agent). 🔹 *(Anthropic, multi-agent research system — verbatim.)*
+So: routing can cut tokens *for a fixed task* by trimming context, while
 multi-agent *architectures overall* often cost more. Both can be true. Measure for your workload;
 don't treat "routing saves money" as guaranteed.
 
@@ -281,7 +285,8 @@ agents **resume after interruption / crash** instead of restarting. ✅
 - **Caveat:** the OSS library is single-process; checkpointing is not automatically
   "production-grade distributed durability" at scale. ✅ *(noted critique)*
 - The podcast's "server crashes 3 hours into a migration, agent resumes where it left off" example
-  is accurate in spirit. ✅
+  is consistent with this capability. *(The resume/persistence capability is ✅-verified; "accurate
+  in spirit" of the specific example is my editorial read, not a verified claim — ⚪.)*
 
 ### Handoffs — OpenAI Agents SDK
 **What/why.** A **handoff** delegates a task to another agent and **transfers control** (the
@@ -345,7 +350,9 @@ textbook **indirect prompt injection** combined with **excessive agency**, and i
   changes). ✅
 - **Complete mediation:** enforce authorization in **downstream systems**, not by trusting the LLM's
   decision. Don't let "the agent decided it was allowed" be your access control. ✅
-- Treat all retrieved/tool-returned content as **untrusted input** (ties to MCP + RAG poisoning). ✅
+- Treat retrieved/tool-returned content as **untrusted input** — MCP's own spec says tool
+  descriptions/annotations *"should be considered untrusted unless obtained from a trusted server."*
+  ✅ *(the MCP-specific principle is verified; generalizing it to all retrieved content is sound but broader than the verified claim.)*
 
 **Sources.** OWASP Top 10 for LLM Applications 2025 (LLM01, LLM06, LLM08 pages + PDF); OWASP Agentic
 AI – Threats and Mitigations.
@@ -365,14 +372,17 @@ reasoning derailed. The podcast describes this well.
 **Best practices.**
 - Adopt **OpenTelemetry GenAI semantic conventions** for agent/framework spans (standardized
   `invoke_agent` / `create_agent` span schema) so traces are portable across tools. 🔹
-- Use a tracing/eval tool (e.g. **Arize Phoenix**, open-source) to inspect inputs/outputs per step,
-  tool selection, and cost. 🔹
+- Use a tracing/eval tool (e.g. **Arize Phoenix**, *source-available under Elastic License 2.0*) to
+  inspect inputs/outputs per step and tool selection. 🔹 *(the repo self-describes as "open-source,"
+  but ELv2 is source-available, not OSI-approved; per-step "cost" tracking isn't prominent in the README.)*
 - Watch for: wrong tool choice, ignored constraints, runaway loops (the "called search 50 times,
   huge bill" failure), and silent fallbacks.
 
-**Sources.** OpenTelemetry GenAI agent-span semantic conventions —
-https://opentelemetry.io/docs/specs/semconv/gen-ai/gen-ai-agent-spans/ 🔹 ·
-Arize Phoenix — https://github.com/Arize-ai/phoenix 🔹.
+**Sources.** OpenTelemetry GenAI agent-span semantic conventions — https://opentelemetry.io/docs/specs/semconv/gen-ai/gen-ai-agent-spans/ 🔹
+*(the `create_agent` / `invoke_agent` span names are verbatim-confirmed, but this spec has since
+relocated to the OpenTelemetry `semantic-conventions` GenAI repo — the docs URL now serves a redirect
+stub, so follow it to the current location)* ·
+Arize Phoenix — https://github.com/Arize-ai/phoenix 🔹 *(source-available, Elastic License 2.0)*.
 
 ---
 
@@ -388,9 +398,9 @@ Arize Phoenix — https://github.com/Arize-ai/phoenix 🔹.
   and **faithfulness** (can every claim be traced to retrieved context?). 🔹 *(arXiv:2309.15217)*
 - **LLM-as-a-judge** — strong judge models (e.g. GPT-4) reached **>80% agreement** with humans
   (~human-human level) on MT-Bench/Chatbot Arena. 🔹 *(Zheng et al., arXiv:2306.05685)*
-  - **But** trajectory judging is harder: across 12 judges on agent trajectories, **no single judge
-    was best across all settings** — judges have biases; don't treat one as ground truth.
-    🔹 *(AgentRewardBench, arXiv:2504.08942)*
+  - **But** trajectory judging is harder: AgentRewardBench evaluated 12 LLM judges over 1,302
+    trajectories and found **no single LLM judge excels across all benchmarks** — judges have biases;
+    don't treat one as ground truth. 🔹 *(AgentRewardBench, arXiv:2504.08942)*
 
 **Best practices.** Evaluate the trajectory (did the planner understand the goal? did the verifier
 catch the executor? was human review triggered at the right threshold?), not just the destination.
@@ -491,9 +501,9 @@ SWEbench→**SWE-bench**, "Egentic"→**Agentic**, "IRAC/ARAG"→**RAG**.
 - LLM01 Prompt Injection — https://genai.owasp.org/llmrisk/llm01-prompt-injection/
 - OWASP Agentic AI – Threats & Mitigations — https://genai.owasp.org/resource/agentic-ai-threats-and-mitigations/
 
-**Multi-agent debate (verified ✅):**
-- Anthropic multi-agent research system — https://www.anthropic.com/engineering/multi-agent-research-system
-- Cognition, "Don't Build Multi-Agents" — https://cognition.com/blog/dont-build-multi-agents
+**Multi-agent debate (sourced 🔹 — quotes independently audited verbatim; the *claims* were not in the adversarial-vote set):**
+- Anthropic multi-agent research system — https://www.anthropic.com/engineering/multi-agent-research-system *(90.2% and ~15× token figures confirmed verbatim)*
+- Cognition, "Don't Build Multi-Agents" — https://cognition.com/blog/dont-build-multi-agents *("fragile systems" quote confirmed verbatim)*
 
 **RAG fact-check (sourced 🔹):**
 - Gao et al., RAG survey — https://arxiv.org/abs/2312.10997
@@ -530,6 +540,14 @@ SWEbench→**SWE-bench**, "Egentic"→**Agentic**, "IRAC/ARAG"→**RAG**.
   (c) single-investigator finds such as PoisonedRAG.*
 - *⚪ — practitioner consensus or my own synthesis, not anchored to one decisive primary source
   (e.g. the agent-vs-chatbot framing, JSON-schema design, tool-failure handling, HITL-at-scale).*
+
+*Quote-fidelity audit (this revision): every 🔹 citation was independently re-fetched and checked for
+verbatim fidelity. Most verified exact (Gao, Anthropic Contextual Retrieval 49/67%, Microsoft Azure,
+PoisonedRAG 90%/5-texts, SWE-bench 2,294/12-repos, RAGAS, LLM-as-judge ">80%", Anthropic 90.2%/15×,
+Cognition). Corrections applied: the LaRA "silver bullet" sentence was a title-derived paraphrase
+(replaced with the verbatim abstract quote); the Ragie "1000×" framing was de-inverted (RAG is 1000×
+cheaper); the OpenTelemetry spec URL was flagged as relocated; Phoenix "open-source" was qualified to
+Elastic License 2.0; and an unverifiable VentureBeat "RAG is dead" quote was removed entirely.*
 
 *The source podcast is a Substack post; the companion transcript is a capture of its
 **Substack-generated captions**, not an audio-verified transcription. Framework APIs and the MCP /
